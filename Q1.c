@@ -9,13 +9,18 @@ void add_arrays(int* result, int* a, int* b, int array_size) {
 	// Add a + b together and store in the result array.
     // DO NOT create any local variables in this function.
     // +4
+    while (array_size--) {
+        result[array_size] = a[array_size] + b[array_size];
+    }
 
 }
 
 void rand_init(int* a, int array_size) {
     int range_start = 0;
     int range_end = 9;
-
+    for (int i = 0; i < array_size; i++) {
+        a[i] = (rand() % (range_end - range_start + 1)) + range_start;
+    }
     // @TODO
     // Randomly initialize an array of size array_size
     // using numbers between 0 and 9.
@@ -25,9 +30,8 @@ void rand_init(int* a, int array_size) {
 }
 
 int main(void) {
-
-    int* a = (int*)malloc(sizeof(int) * ARRAY_SIZE);
-
+    
+int* a = (int*)malloc(sizeof(int) * ARRAY_SIZE);
     int* b = (int*)malloc(sizeof(int) * ARRAY_SIZE);
     int* c = (int*)malloc(sizeof(int) * ARRAY_SIZE);
 
@@ -38,13 +42,33 @@ int main(void) {
         free(c);
         return 1;
     }
-    printf("Memory allocated OK.\n");
+
+    srand((unsigned)time(NULL));
+
+    /* Time initialization of a and b */
+    double start = clock();
+    rand_init(a, ARRAY_SIZE);
+    rand_init(b, ARRAY_SIZE);
+    double stop = clock();
+
+    printf("Total init time: %.2f ms\n", 1000 * (stop - start) / CLOCKS_PER_SEC);
+
+    /* Time add */
+    start = clock();
+    add_arrays(c, a, b, ARRAY_SIZE);
+    stop = clock();
+
+    /* Print first 10 values of c on one line (like the sample) */
+    for (int i = 0; i < 10; i++) {
+        printf("%d ", c[i]);
+    }
+    printf("\n");
+
+    printf("Total add time: %.2f ms\n", 1000 * (stop - start) / CLOCKS_PER_SEC);
+
     free(a);
     free(b);
     free(c);
-
-
-    
     return 0;
     // @TODO
 	// Allocate the source arrays (a, b, c)
